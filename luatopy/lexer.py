@@ -31,6 +31,12 @@ class Lexer:
             return EOF_MARKER
         return self.source[self.read_pos + steps]
 
+    def peek_value(self, value = "") -> str:
+        for steps in range(self.read_pos, len(self.source)): 
+            if value == self.source[steps]:
+                return steps - self.read_pos
+        return False
+    
     def peek_behind(self, steps: int = 0) -> str:
         if self.read_pos - steps >= len(self.source):
             return EOF_MARKER
@@ -134,10 +140,10 @@ class Lexer:
                 self.read_char()
                 tok = Token(token_type=TokenType.EQ, literal=literal)
                 return tok
-
-            tok = Token(token_type=TokenType.ASSIGN, literal=self.ch)
-            self.read_char()
-            return tok
+            else:
+                tok = Token(token_type=TokenType.ASSIGN, literal=self.ch)
+                self.read_char()
+                return tok
 
         if self.ch == ".":
             if self.peek_ahead(0) == ".":
@@ -146,6 +152,10 @@ class Lexer:
                 literal = literal + self.ch
                 self.read_char()
                 tok = Token(token_type=TokenType.CONCAT, literal=literal)
+                return tok
+            else:
+                tok = Token(token_type=TokenType.DOT, literal=self.ch)
+                self.read_char()
                 return tok
 
         if self.ch == "~":

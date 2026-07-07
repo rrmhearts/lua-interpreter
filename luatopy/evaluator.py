@@ -72,6 +72,7 @@ def evaluate(node: ast.Node, env: obj.Environment):
     if klass == ast.AssignStatement:
         assignment: ast.AssignStatement = cast(ast.AssignStatement, node)
         assignment_value: obj.Obj = evaluate(assignment.value, env)
+        # print("assign statement: ", assignment, assignment_value)
 
         if is_error(assignment_value):
             return assignment_value
@@ -142,7 +143,11 @@ def evaluate_index_expression(left: obj.Obj, index: obj.Obj) -> obj.Obj:
         return evaluate_table_key_expression(
             cast(obj.Table, left), cast(obj.String, index)
         )
-
+    if left.type() == obj.ObjType.TABLE and index.type() == obj.ObjType.NULL:
+        return evaluate_table_key_expression(
+            cast(obj.Table, left), cast(obj.String, index)
+        )
+    
     return obj.Error.create("Index operation not supported")
 
 
@@ -158,7 +163,6 @@ def evaluate_table_index_expression(
 def evaluate_table_key_expression(
     table: obj.Table, index: obj.String
 ) -> obj.Obj:
-    index_value: str = index.value
     try:
         return table.elements[index]
     except:

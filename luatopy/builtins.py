@@ -28,6 +28,8 @@ def builtin_type(*args: obj.Obj) -> obj.Obj:
         value_type = "table"
     if type(value) == obj.Function:
         value_type = "function"
+    if type(value) == obj.Null:
+        value_type = "nil"
 
     if not value_type:
         return NULL

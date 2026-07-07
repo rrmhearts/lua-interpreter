@@ -52,7 +52,14 @@ class Boolean(Node):
     def to_code(self) -> str:
         return "true" if self.value else "false"
 
+@dataclass
+class Nil(Node):
+    value: bool
 
+    def to_code(self) -> str:
+        
+        return "nil"
+    
 @dataclass
 class AssignStatement(Statement):
     name: Identifier

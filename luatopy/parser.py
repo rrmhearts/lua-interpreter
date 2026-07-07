@@ -48,6 +48,7 @@ precedences: Dict[TokenType, Precedence] = {
     TokenType.IF: Precedence.CALL,
     TokenType.CONCAT: Precedence.CONCAT,
     TokenType.LBRACKET: Precedence.INDEX,
+    TokenType.DOT: Precedence.INDEX,
 }
 
 
@@ -68,7 +69,8 @@ class Parser:
             TokenType.IF: self.parse_if_expression,
             TokenType.FUNCTION: self.parse_function_literal,
             TokenType.NOT: self.parse_prefix_expression,
-            TokenType.LBRACE: self.parse_table_literal,  # {
+            TokenType.LBRACE: self.parse_table_literal,
+            # TokenType.ASSIGN: self.parse_assignment_expression,
         }
 
         self.infix_parse_fns: Dict[
@@ -90,11 +92,13 @@ class Parser:
             TokenType.LPAREN: self.parse_call_expression,
             TokenType.CONCAT: self.parse_infix_expression,
             TokenType.LBRACKET: self.parse_index_expression,
+            TokenType.DOT: self.parse_index_expression,
         }
 
         self.table_prefix_fns = {
             TokenType.IDENTIFIER: self.parse_table_identifier_pair,
             TokenType.LBRACKET: self.parse_table_expression_pair,
+            TokenType.DOT: self.parse_table_expression_pair,
         }
 
         self.cur_token: Token = self.lexer.next_token()
@@ -121,9 +125,10 @@ class Parser:
         return ast.Program(statements)
 
     def parse_statement(self) -> ast.Node:
+        # print("parse_statement:", self.cur_token, self.cur_token.token_type, self.peek_token)
         if (
             self.cur_token.token_type == TokenType.IDENTIFIER
-            and self.peek_token.token_type == TokenType.ASSIGN
+                and self.peek_token.token_type == TokenType.ASSIGN
         ):
             return self.parse_assignment_statement()
 
@@ -134,9 +139,27 @@ class Parser:
 
     def parse_assignment_statement(self):
         token = self.cur_token
+        # subitem = ""
 
+        # is_assignment = self.peek_token.token_type == TokenType.ASSIGN
+        # print(self.peek_token, self.peek_token.token_type, is_assignment)
+        # if (is_assignment):
         self.next_token()
         self.next_token()  # We already know the next statement is =
+        #     name = ast.Identifier(token=token, value=token.literal)
+        # else:
+        #     # or maybe table item
+        #     token = self.parse_index_expression(self.cur_token)
+        #     print("token:", token)
+        #     name = ast.Identifier(token=token, value=token.left.literal + "." + token.index)
+        #     # self.next_token() # jump the . or [
+        #     # subitem = self.cur_token
+        #     # self.next_token()
+        #     # if self.cur_token.token_type == TokenType.RBRACKET:
+        #     #     self.next_token() # jump the ]
+        #     # assert self.cur_token.token_type == TokenType.ASSIGN, "expected = during assignment: " + self.cur_token.literal
+
+        #     self.next_token()
 
         value = self.parse_expression(Precedence.LOWEST)
 
@@ -145,10 +168,12 @@ class Parser:
             TokenType.SEMICOLON,
         ]:
             self.next_token()
-
+        # print("parse_assignment_statement:", token, value)
+        
         statement = ast.AssignStatement(
             token=token,
             name=ast.Identifier(token=token, value=token.literal),
+            # name=ast.Identifier(token=Token(TokenType.IDENTIFIER, f"{token.literal}{subitem}"), value=f"{token.literal}{subitem}"),
             value=value,
         )
         return statement
@@ -204,12 +229,13 @@ class Parser:
 
     def parse_expression_statement(self) -> ast.ExpressionStatement:
         expression = self.parse_expression(Precedence.LOWEST)
-
+        # print("parse_expression_statement:", expression, self.cur_token)
         return ast.ExpressionStatement(
             token=self.cur_token, expression=expression
         )
 
     def parse_expression(self, precedence: Precedence):
+        # print("parse_expression:", self.cur_token, self.cur_token.token_type, precedence)
         prefix_fn = self.prefix_parse_fns.get(self.cur_token.token_type, None)
 
         if not prefix_fn:
@@ -434,7 +460,7 @@ class Parser:
 
         self.next_token()
         self.next_token()
-
+        # print("parse_table_id_pair:", key_token, self.cur_token)
         expression = self.parse_expression(Precedence.LOWEST)
         return (
             None,
@@ -446,6 +472,7 @@ class Parser:
 
     def parse_table_expression_value(self):
         expression = self.parse_expression(Precedence.LOWEST)
+        # print("parse_table_expression_value:", expression)
         return (expression, None)
 
     def parse_table_expression_pair(self):
@@ -459,18 +486,37 @@ class Parser:
 
         value_expression = self.parse_expression(Precedence.LOWEST)
 
+        # print("parse_table_expression_pair:", key_expression, value_expression)
+
         return (None, (key_expression, value_expression))
 
     def parse_index_expression(self, left: ast.Node):
         left_expression = cast(ast.Expression, left)
         token = self.cur_token
 
-        self.next_token()
+        self.next_token() # Bypass [ or .
         index = self.parse_expression(Precedence.LOWEST)
+        # print("parse_index_expression:", token, left_expression, ", index: ",index)
 
-        if not self.expect_peek(TokenType.RBRACKET):
+        if token.token_type == TokenType.LBRACKET and not self.expect_peek(TokenType.RBRACKET):
             return None
-
+        if token.token_type == TokenType.DOT:
+            # this will evaluate {}.b to nil
+            # also need the index to be a StringLiteral, not an Identifier
+            index = ast.StringLiteral(token=index.token, value=index.value)#token=Token(token_type=TokenType.STR, literal=token.literal), value=token.literal)
         return ast.IndexExpression(
             token=token, left=left_expression, index=index
         )
+
+    # def parse_assignment_expression(self):
+    #     token = self.cur_token
+
+    #     self.next_token()
+    #     right = self.parse_expression(Precedence.LOWEST)
+    #     print("parse_assignment_expression:",token, right)
+
+    #     return ast.AssignStatement(
+    #         token=token,
+    #         name=ast.Identifier(token=token, value=token.literal),
+    #         value=right,
+    #     )

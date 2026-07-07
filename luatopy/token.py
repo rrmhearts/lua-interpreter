@@ -25,6 +25,7 @@ class TokenType(Enum):
     SLASH = auto()
     SEMICOLON = auto()
     PERCENT = auto()
+    DOT = auto()
 
     EQ = auto()
     NOT_EQ = auto()
@@ -53,6 +54,7 @@ class TokenType(Enum):
     # Keywords
     FUNCTION = auto()
     IF = auto()
+    # ELSEIF = auto()
     ELSE = auto()
     THEN = auto()
     END = auto()
