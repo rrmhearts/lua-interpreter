@@ -1,6 +1,6 @@
 # Lua interpreter in Python
 
-This is my second take on writing a Lua-To-Python compiler, it includes:
+This is a lua interpreter written in Python, it includes:
 
 - [x] Lexer
 - [x] Parser
@@ -8,11 +8,13 @@ This is my second take on writing a Lua-To-Python compiler, it includes:
 - [x] Repl
 - [x] Interpeter
 
+The repository is a continuation of an existing project for learning purposes.
 
 ## Running repl
 
 - `python repl.py`
 
+Use `pytest` for testing functionality.
 
 ## TODO
 - [x] Introduce `;` as a separator
@@ -23,6 +25,7 @@ This is my second take on writing a Lua-To-Python compiler, it includes:
 - [x] `or` operator
 - [ ] `elseif` statement
 - [x] Variables with numbers in name
+- [x] Table DOT notation t.b same as t["b"]
 - [ ] Iterator for Table using `pairs`/`ipairs`
 - [ ] `_G` for globals access
 - [ ] `for` loop
@@ -54,10 +57,3 @@ This is my second take on writing a Lua-To-Python compiler, it includes:
 - Table count with `#`
 - Non existing identifiers return nil
 - Modulo operator
-
-
-## References
-- A lot of the work here is based on the book [Writing A Compiler In Go](https://compilerbook.com/)
-- [My first take](https://github.com/marteinn/Lua-To-Python)
-- [A Python Interpreter Written in Python](https://www.aosabook.org/en/500L/a-python-interpreter-written-in-python.html)
-- [Let’s Build A Simple Interpreter. Part 7: Abstract Syntax Trees](https://ruslanspivak.com/lsbasi-part7/)
