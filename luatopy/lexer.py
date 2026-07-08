@@ -12,39 +12,39 @@ class Lexer:
     def __init__(self, source: StringIO) -> None:
         self.source: str = source.getvalue()
         self.pos: int = 0
-        self.read_pos: int = 0
+        self._read_pos: int = 0
         self.ch: str = ""
 
-        self.read_char()
+        self._read_char()
 
-    def read_char(self) -> None:
-        if self.read_pos >= len(self.source):
+    def _read_char(self) -> None:
+        if self._read_pos >= len(self.source):
             self.ch = EOF_MARKER
         else:
-            self.ch = self.source[self.read_pos]
+            self.ch = self.source[self._read_pos]
 
-        self.pos = self.read_pos
-        self.read_pos = self.read_pos + 1
+        self.pos = self._read_pos
+        self._read_pos = self._read_pos + 1
 
-    def peek_ahead(self, steps: int = 0) -> str:
-        if self.read_pos + steps >= len(self.source):
+    def _peek_ahead(self, steps: int = 0) -> str:
+        if self._read_pos + steps >= len(self.source):
             return EOF_MARKER
-        return self.source[self.read_pos + steps]
+        return self.source[self._read_pos + steps]
 
-    def peek_value(self, value = "") -> str:
-        for steps in range(self.read_pos, len(self.source)): 
+    def _peek_value(self, value = "") -> str:
+        for steps in range(self._read_pos, len(self.source)): 
             if value == self.source[steps]:
-                return steps - self.read_pos
+                return steps - self._read_pos
         return False
     
-    def peek_behind(self, steps: int = 0) -> str:
-        if self.read_pos - steps >= len(self.source):
+    def _peek_behind(self, steps: int = 0) -> str:
+        if self._read_pos - steps >= len(self.source):
             return EOF_MARKER
-        return self.source[self.read_pos - steps]
+        return self.source[self._read_pos - steps]
 
-    def skip_whitespace(self) -> None:
+    def _skip_whitespace(self) -> None:
         while self.ch == " ":
-            self.read_char()
+            self._read_char()
 
     def tokens(self) -> Iterator[Token]:
         while True:
@@ -55,167 +55,167 @@ class Lexer:
                 break
 
     def next_token(self) -> Token:
-        self.skip_whitespace()
+        self._skip_whitespace()
 
         if self.ch == EOF_MARKER:
             tok = Token(token_type=TokenType.EOF, literal=self.ch)
-            self.read_char()
+            self._read_char()
             return tok
 
         if self.ch == "\n":
             tok = Token(token_type=TokenType.NEWLINE, literal=self.ch)
-            self.read_char()
+            self._read_char()
             return tok
 
         if self.ch == ";":
             tok = Token(token_type=TokenType.SEMICOLON, literal=self.ch)
-            self.read_char()
+            self._read_char()
             return tok
 
         if self.ch == "%":
             tok = Token(token_type=TokenType.PERCENT, literal=self.ch)
-            self.read_char()
+            self._read_char()
             return tok
 
         if self.ch == "#":
             tok = Token(token_type=TokenType.HASH, literal=self.ch)
-            self.read_char()
+            self._read_char()
             return tok
 
         if self.ch == "(":
             tok = Token(token_type=TokenType.LPAREN, literal=self.ch)
-            self.read_char()
+            self._read_char()
             return tok
 
         if self.ch == ")":
             tok = Token(token_type=TokenType.RPAREN, literal=self.ch)
-            self.read_char()
+            self._read_char()
             return tok
 
         if self.ch == "{":
             tok = Token(token_type=TokenType.LBRACE, literal=self.ch)
-            self.read_char()
+            self._read_char()
             return tok
 
         if self.ch == "}":
             tok = Token(token_type=TokenType.RBRACE, literal=self.ch)
-            self.read_char()
+            self._read_char()
             return tok
 
         if self.ch == "[":
             tok = Token(token_type=TokenType.LBRACKET, literal=self.ch)
-            self.read_char()
+            self._read_char()
             return tok
 
         if self.ch == "]":
             tok = Token(token_type=TokenType.RBRACKET, literal=self.ch)
-            self.read_char()
+            self._read_char()
             return tok
 
         if self.ch == ",":
             tok = Token(token_type=TokenType.COMMA, literal=self.ch)
-            self.read_char()
+            self._read_char()
             return tok
 
         if self.ch == "+":
             tok = Token(token_type=TokenType.PLUS, literal=self.ch)
-            self.read_char()
+            self._read_char()
             return tok
 
         if self.ch == "*":
             tok = Token(token_type=TokenType.ASTERISK, literal=self.ch)
-            self.read_char()
+            self._read_char()
             return tok
 
         if self.ch == "/":
             tok = Token(token_type=TokenType.SLASH, literal=self.ch)
-            self.read_char()
+            self._read_char()
             return tok
 
         if self.ch == "=":
-            if self.peek_ahead() == "=":
+            if self._peek_ahead() == "=":
                 literal = self.ch
-                self.read_char()
+                self._read_char()
                 literal = literal + self.ch
-                self.read_char()
+                self._read_char()
                 tok = Token(token_type=TokenType.EQ, literal=literal)
                 return tok
             else:
                 tok = Token(token_type=TokenType.ASSIGN, literal=self.ch)
-                self.read_char()
+                self._read_char()
                 return tok
 
         if self.ch == ".":
-            if self.peek_ahead(0) == ".":
+            if self._peek_ahead(0) == ".":
                 literal = self.ch
-                self.read_char()
+                self._read_char()
                 literal = literal + self.ch
-                self.read_char()
+                self._read_char()
                 tok = Token(token_type=TokenType.CONCAT, literal=literal)
                 return tok
             else:
                 tok = Token(token_type=TokenType.DOT, literal=self.ch)
-                self.read_char()
+                self._read_char()
                 return tok
 
         if self.ch == "~":
-            if self.peek_ahead(0) == "=":
+            if self._peek_ahead(0) == "=":
                 literal = self.ch
-                self.read_char()
+                self._read_char()
                 literal = literal + self.ch
-                self.read_char()
+                self._read_char()
                 tok = Token(token_type=TokenType.NOT_EQ, literal=literal)
                 return tok
 
         if self.ch == ">":
-            if self.peek_ahead(0) == "=":
+            if self._peek_ahead(0) == "=":
                 literal = self.ch
-                self.read_char()
+                self._read_char()
                 literal = literal + self.ch
-                self.read_char()
+                self._read_char()
                 tok = Token(token_type=TokenType.GTE, literal=literal)
                 return tok
 
             literal = self.ch
-            self.read_char()
+            self._read_char()
             tok = Token(token_type=TokenType.GT, literal=literal)
             return tok
 
         if self.ch == "<":
-            if self.peek_ahead(0) == "=":
+            if self._peek_ahead(0) == "=":
                 literal = self.ch
-                self.read_char()
+                self._read_char()
                 literal = literal + self.ch
-                self.read_char()
+                self._read_char()
                 tok = Token(token_type=TokenType.LTE, literal=literal)
                 return tok
 
             literal = self.ch
-            self.read_char()
+            self._read_char()
             tok = Token(token_type=TokenType.LT, literal=literal)
             return tok
 
         if self.ch == "-":
             if (
-                self.peek_ahead(0) == "-"
-                and self.peek_ahead(1) == "["
-                and self.peek_ahead(2) == "["
+                self._peek_ahead(0) == "-"
+                and self._peek_ahead(1) == "["
+                and self._peek_ahead(2) == "["
             ):
-                comment = self.read_multiline_comment()
+                comment = self._read_multiline_comment()
                 tok = Token(token_type=TokenType.COMMENT, literal=comment)
                 return tok
 
-            if self.peek_ahead(0) == "-":
-                comment = self.read_comment()
+            if self._peek_ahead(0) == "-":
+                comment = self._read_comment()
                 tok = Token(token_type=TokenType.COMMENT, literal=comment)
                 return tok
 
             tok = Token(token_type=TokenType.MINUS, literal=self.ch)
-            self.read_char()
+            self._read_char()
             return tok
 
         if is_letter(self.ch):
-            identifier = self.read_identifier()
+            identifier = self._read_identifier()
 
             if identifier == "nil":
                 return Token(token_type=TokenType.NIL, literal=identifier)
@@ -257,46 +257,46 @@ class Lexer:
             return Token(token_type=TokenType.IDENTIFIER, literal=identifier)
 
         if is_digit(self.ch):
-            value = self.read_number()
+            value = self._read_number()
             return Token(token_type=TokenType.INT, literal=value)
 
         if self.ch == '"':
-            value = self.read_string('"')
+            value = self._read_string('"')
             return Token(token_type=TokenType.STR, literal=value)
 
         if self.ch == "'":
-            value = self.read_string("'")
+            value = self._read_string("'")
             return Token(token_type=TokenType.STR, literal=value)
 
         tok = Token(token_type=TokenType.ILLEGAL, literal=self.ch)
-        self.read_char()
+        self._read_char()
         return tok
 
-    def read_identifier(self) -> str:
+    def _read_identifier(self) -> str:
         start_position = self.pos
         while self.ch != EOF_MARKER and (is_letter(
             self.ch) or is_digit(self.ch)
         ):
-            self.read_char()
+            self._read_char()
         return self.source[start_position : self.pos]
 
-    def read_number(self) -> str:
+    def _read_number(self) -> str:
         start_position = self.pos
         while self.ch != EOF_MARKER and is_digit(self.ch):
-            self.read_char()
+            self._read_char()
         return self.source[start_position : self.pos]
 
-    def read_string(self, indicator: str = '"') -> str:
-        self.read_char()
+    def _read_string(self, indicator: str = '"') -> str:
+        self._read_char()
 
         start_position = self.pos
         out: str = self.ch
 
         while True:
-            self.read_char()
+            self._read_char()
 
-            if self.ch == "\\" and self.peek_ahead(0) == indicator:
-                self.read_char()
+            if self.ch == "\\" and self._peek_ahead(0) == indicator:
+                self._read_char()
                 out += indicator
                 continue
 
@@ -305,27 +305,27 @@ class Lexer:
 
             out = out + self.ch
 
-        self.read_char()
+        self._read_char()
         return out
 
-    def read_comment(self) -> str:
+    def _read_comment(self) -> str:
         start_position = self.pos
         while self.ch != "\n":
-            self.read_char()
+            self._read_char()
         return self.source[start_position + 2 : self.pos]
 
-    def read_multiline_comment(self) -> str:
+    def _read_multiline_comment(self) -> str:
         start_position = self.pos
         while not (
             self.ch == "]"
-            and self.peek_ahead(0) == "]"
-            and self.peek_ahead(1) == "-"
-            and self.peek_ahead(2) == "-"
+            and self._peek_ahead(0) == "]"
+            and self._peek_ahead(1) == "-"
+            and self._peek_ahead(2) == "-"
         ):
-            self.read_char()
+            self._read_char()
 
         for _ in range(0, 4):
-            self.read_char()
+            self._read_char()
 
         return self.source[start_position + 4 : self.pos - 4]
 
