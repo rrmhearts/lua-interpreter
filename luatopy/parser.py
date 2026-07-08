@@ -125,12 +125,6 @@ class Parser:
         return ast.Program(statements)
 
     def parse_statement(self) -> ast.Node:
-        # print("parse_statement:", self.cur_token, self.cur_token.token_type, self.peek_token)
-        if (
-            self.cur_token.token_type == TokenType.IDENTIFIER
-                and self.peek_token.token_type == TokenType.ASSIGN
-        ):
-            return self.parse_assignment_statement()
 
         if self.cur_token.token_type == TokenType.RETURN:
             return self.parse_return_statement()
@@ -141,25 +135,10 @@ class Parser:
         token = self.cur_token
         # subitem = ""
 
-        # is_assignment = self.peek_token.token_type == TokenType.ASSIGN
-        # print(self.peek_token, self.peek_token.token_type, is_assignment)
-        # if (is_assignment):
+
         self.next_token()
         self.next_token()  # We already know the next statement is =
-        #     name = ast.Identifier(token=token, value=token.literal)
-        # else:
-        #     # or maybe table item
-        #     token = self.parse_index_expression(self.cur_token)
-        #     print("token:", token)
-        #     name = ast.Identifier(token=token, value=token.left.literal + "." + token.index)
-        #     # self.next_token() # jump the . or [
-        #     # subitem = self.cur_token
-        #     # self.next_token()
-        #     # if self.cur_token.token_type == TokenType.RBRACKET:
-        #     #     self.next_token() # jump the ]
-        #     # assert self.cur_token.token_type == TokenType.ASSIGN, "expected = during assignment: " + self.cur_token.literal
 
-        #     self.next_token()
 
         value = self.parse_expression(Precedence.LOWEST)
 
@@ -168,7 +147,6 @@ class Parser:
             TokenType.SEMICOLON,
         ]:
             self.next_token()
-        # print("parse_assignment_statement:", token, value)
         
         statement = ast.AssignStatement(
             token=token,
@@ -227,11 +205,37 @@ class Parser:
 
         return ast.BlockStatement(token=token, statements=statements)
 
-    def parse_expression_statement(self) -> ast.ExpressionStatement:
+    def parse_expression_statement(self) -> ast.Node:
+        start_token = self.cur_token
+        
+        # Parse the left side. It could be an Identifier or an IndexExpression
         expression = self.parse_expression(Precedence.LOWEST)
-        # print("parse_expression_statement:", expression, self.cur_token)
+        # If the next token is an ASSIGN, we are dealing with an AssignStatement
+        if self.peek_token.token_type == TokenType.ASSIGN:
+            self.next_token()  # Move to '='
+            self.next_token()  # Move past '=' to the value
+            
+            value = self.parse_expression(Precedence.LOWEST)
+
+            if self.peek_token.token_type in [
+                TokenType.NEWLINE,
+                TokenType.SEMICOLON,
+            ]:
+                self.next_token()
+
+            # name is either an Identifier or an IndexExpression
+            return ast.AssignStatement(
+                token=start_token,
+                name=expression,  # Pass the parsed expression directly as the L-value
+                value=value,
+            )
+
+        # Otherwise, it's just a regular expression statement
+        if self.peek_token.token_type in [TokenType.NEWLINE, TokenType.SEMICOLON]:
+            self.next_token()
+
         return ast.ExpressionStatement(
-            token=self.cur_token, expression=expression
+            token=start_token, expression=expression
         )
 
     def parse_expression(self, precedence: Precedence):
@@ -263,7 +267,7 @@ class Parser:
 
         return left_expression
 
-    def parse_identifier(self):
+    def parse_identifier(self) -> ast.Identifier:
         value = self.cur_token.literal
         return ast.Identifier(token=self.cur_token, value=value)
 
@@ -507,16 +511,3 @@ class Parser:
         return ast.IndexExpression(
             token=token, left=left_expression, index=index
         )
-
-    # def parse_assignment_expression(self):
-    #     token = self.cur_token
-
-    #     self.next_token()
-    #     right = self.parse_expression(Precedence.LOWEST)
-    #     print("parse_assignment_expression:",token, right)
-
-    #     return ast.AssignStatement(
-    #         token=token,
-    #         name=ast.Identifier(token=token, value=token.literal),
-    #         value=right,
-    #     )

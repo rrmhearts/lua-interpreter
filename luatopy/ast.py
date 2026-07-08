@@ -59,15 +59,6 @@ class Nil(Node):
     def to_code(self) -> str:
         
         return "nil"
-    
-@dataclass
-class AssignStatement(Statement):
-    name: Identifier
-    value: Node
-
-    def to_code(self) -> str:
-        return "{0} = {1}".format(self.name.value, self.value.to_code())
-
 
 @dataclass
 class ExpressionStatement(Statement):
@@ -200,3 +191,11 @@ class IndexExpression(Expression):
 
     def to_code(self) -> str:
         return "({0}[{1}])".format(self.left.to_code(), self.index.to_code())
+
+@dataclass
+class AssignStatement(Statement):
+    name: Identifier | IndexExpression # An IndexExpression is a name[index] and can be assigned to.
+    value: Node
+
+    def to_code(self) -> str:
+        return "{0} = {1}".format(self.name.value, self.value.to_code())

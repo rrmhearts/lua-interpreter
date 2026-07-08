@@ -76,7 +76,21 @@ def evaluate(node: ast.Node, env: obj.Environment):
 
         if is_error(assignment_value):
             return assignment_value
-        env.set(assignment.name.value, assignment_value)
+        
+        if isinstance(assignment.name, ast.Identifier):
+            env.set(assignment.name.value, assignment_value)
+        elif isinstance(assignment.name, ast.IndexExpression):
+            left_table = evaluate(assignment.name.left, env)
+            index_key = evaluate(assignment.name.index, env)
+
+            if is_error(left_table):
+                return left_table
+            if is_error(index_key):
+                return index_key
+            
+            # set receives dictionary key and value
+            left_table.elements[index_key] = assignment_value
+
         return None
 
     if klass == ast.Identifier:

@@ -1,6 +1,6 @@
 # Lua interpreter in Python
 
-This is a lua interpreter written in Python, it includes:
+This is a Lua interpreter written in Python, it includes:
 
 - [x] Lexer
 - [x] Parser
@@ -15,29 +15,6 @@ The repository is a continuation of an existing project for learning purposes.
 - `python repl.py`
 
 Use `pytest` for testing functionality.
-
-## TODO
-- [x] Introduce `;` as a separator
-- [x] Named functions
-- [x] Not defined variables should return `nil`
-- [x] Modulo operator
-- [x] `and` operator
-- [x] `or` operator
-- [ ] `elseif` statement
-- [x] Variables with numbers in name
-- [x] Table DOT notation t.b same as t["b"]
-- [ ] Iterator for Table using `pairs`/`ipairs`
-- [ ] `_G` for globals access
-- [ ] `for` loop
-- [ ] `while` loop
-- [ ] `repeat` loop
-- [ ] Short circuit / tenary operator
-- [ ] Dot property syntax in Table for string keys
-- [ ] Numbers beginning with `.` (Ex `.5`)
-- [ ] Handle global vs local variables in lua style
-- [ ] Function calls with single params should not require parens
-- [ ] Metatable support for tables
-
 
 ## Supports
 - Single and multiline comments
@@ -57,3 +34,5 @@ Use `pytest` for testing functionality.
 - Table count with `#`
 - Non existing identifiers return nil
 - Modulo operator
+
+See [TODO.md](./TODO.md) for future items to support.
