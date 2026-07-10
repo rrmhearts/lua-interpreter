@@ -20,7 +20,7 @@ def builtin_type(*args: obj.Obj) -> obj.Obj:
     value_type: Optional[str] = None
     if type(value) == obj.String:
         value_type = "string"
-    if type(value) == obj.Integer:
+    if type(value) == obj.Number:
         value_type = "number"
     if type(value) == obj.Boolean:
         value_type = "boolean"

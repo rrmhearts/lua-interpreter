@@ -9,7 +9,7 @@ class TokenType(Enum):
     NEWLINE = auto()
 
     IDENTIFIER = auto()
-    INT = auto()
+    NUMBER = auto()
     STR = auto()
     NIL = auto()
     TRUE = auto()

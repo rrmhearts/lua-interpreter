@@ -153,6 +153,9 @@ class Lexer:
                 self._read_char()
                 tok = Token(token_type=TokenType.CONCAT, literal=literal)
                 return tok
+            elif is_digit(self._peek_ahead(0)):
+                value = self._read_number()
+                return Token(token_type=TokenType.NUMBER, literal=value)
             else:
                 tok = Token(token_type=TokenType.DOT, literal=self.ch)
                 self._read_char()
@@ -258,7 +261,7 @@ class Lexer:
 
         if is_digit(self.ch):
             value = self._read_number()
-            return Token(token_type=TokenType.INT, literal=value)
+            return Token(token_type=TokenType.NUMBER, literal=value)
 
         if self.ch == '"':
             value = self._read_string('"')
@@ -282,7 +285,8 @@ class Lexer:
 
     def _read_number(self) -> str:
         start_position = self.pos
-        while self.ch != EOF_MARKER and is_digit(self.ch):
+        # dot can be in a number
+        while self.ch != EOF_MARKER and (is_digit(self.ch) or is_dot(self.ch)):
             self._read_char()
         return self.source[start_position : self.pos]
 
@@ -336,3 +340,6 @@ def is_letter(char) -> bool:
 
 def is_digit(char) -> bool:
     return bool(re.search(r"[0-9]", char))
+
+def is_dot(char) -> bool:
+    return bool(re.search(r"\.", char))

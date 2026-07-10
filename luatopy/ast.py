@@ -71,8 +71,8 @@ class ExpressionStatement(Statement):
 
 
 @dataclass
-class IntegerLiteral(Node):
-    value: int
+class NumberLiteral(Node):
+    value: int | float
 
     def to_code(self) -> str:
         return str(self.value)

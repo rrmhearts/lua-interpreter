@@ -7,8 +7,7 @@ from luatopy import ast
 
 
 class ObjType(Enum):
-    INTEGER = auto()
-    FLOAT = auto()
+    NUMBER = auto()
     BOOLEAN = auto()
     NULL = auto()
     RETURN = auto()
@@ -60,11 +59,11 @@ class Environment:
 
 
 @dataclass
-class Integer(Obj):
+class Number(Obj):
     value: int = 0
 
     def type(self) -> ObjType:
-        return ObjType.INTEGER
+        return ObjType.NUMBER
 
     def inspect(self) -> str:
         return str(self.value)
@@ -74,11 +73,11 @@ class Integer(Obj):
 
 
 @dataclass
-class Float(Obj):
-    value: float = 0.0
+class Number(Obj):
+    value: int|float = 0
 
     def type(self) -> ObjType:
-        return ObjType.FLOAT
+        return ObjType.NUMBER
 
     def inspect(self) -> str:
         return str(self.value)

@@ -59,7 +59,7 @@ class Parser:
 
         self.prefix_parse_fns: Dict[TokenType, Callable] = {
             TokenType.IDENTIFIER: self.parse_identifier,
-            TokenType.INT: self.parse_integer_literal,
+            TokenType.NUMBER: self.parse_number_literal,
             TokenType.STR: self.parse_string_literal,
             TokenType.MINUS: self.parse_prefix_expression,
             TokenType.HASH: self.parse_prefix_expression,
@@ -271,10 +271,10 @@ class Parser:
         value = self.cur_token.literal
         return ast.Identifier(token=self.cur_token, value=value)
 
-    def parse_integer_literal(self) -> ast.IntegerLiteral:
+    def parse_number_literal(self) -> ast.NumberLiteral:
         literal = self.cur_token.literal
-        value = int(literal)
-        return ast.IntegerLiteral(token=self.cur_token, value=value)
+        value = float(literal) if '.' in literal else int(literal)
+        return ast.NumberLiteral(token=self.cur_token, value=value)
 
     def parse_string_literal(self) -> ast.StringLiteral:
         literal = self.cur_token.literal
@@ -307,7 +307,7 @@ class Parser:
         )
 
     def parse_function_parameters(self):
-        identifiers: List[Identifier] = []
+        identifiers: List[ast.Identifier] = []
 
         if self.peek_token.token_type == TokenType.RPAREN:
             self.next_token()
@@ -440,7 +440,7 @@ class Parser:
 
             if element:
                 elements.append(
-                    (ast.IntegerLiteral(token=None, value=index), element)
+                    (ast.NumberLiteral(token=None, value=index), element)
                 )
                 index = index + 1
             elif pair:
@@ -499,7 +499,7 @@ class Parser:
         token = self.cur_token
 
         self.next_token() # Bypass [ or .
-        index = self.parse_expression(Precedence.LOWEST)
+        index = self.parse_expression(Precedence.INDEX)
         # print("parse_index_expression:", token, left_expression, ", index: ",index)
 
         if token.token_type == TokenType.LBRACKET and not self.expect_peek(TokenType.RBRACKET):

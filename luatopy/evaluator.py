@@ -18,9 +18,9 @@ def evaluate(node: ast.Node, env: obj.Environment):
         exp: ast.ExpressionStatement = cast(ast.ExpressionStatement, node)
         return evaluate(exp.expression, env)
 
-    if klass == ast.IntegerLiteral:
-        integer_literal: ast.IntegerLiteral = cast(ast.IntegerLiteral, node)
-        return obj.Integer(value=integer_literal.value)
+    if klass == ast.NumberLiteral:
+        number_literal: ast.NumberLiteral = cast(ast.NumberLiteral, node)
+        return obj.Number(value=number_literal.value)
 
     if klass == ast.StringLiteral:
         string_literal: ast.StringLiteral = cast(ast.StringLiteral, node)
@@ -149,9 +149,9 @@ def evaluate(node: ast.Node, env: obj.Environment):
 
 
 def evaluate_index_expression(left: obj.Obj, index: obj.Obj) -> obj.Obj:
-    if left.type() == obj.ObjType.TABLE and index.type() == obj.ObjType.INTEGER:
+    if left.type() == obj.ObjType.TABLE and index.type() == obj.ObjType.NUMBER:
         return evaluate_table_index_expression(
-            cast(obj.Table, left), cast(obj.Integer, index)
+            cast(obj.Table, left), cast(obj.Number, index)
         )
     if left.type() == obj.ObjType.TABLE and index.type() == obj.ObjType.STRING:
         return evaluate_table_key_expression(
@@ -166,7 +166,7 @@ def evaluate_index_expression(left: obj.Obj, index: obj.Obj) -> obj.Obj:
 
 
 def evaluate_table_index_expression(
-    table: obj.Table, index: obj.Integer
+    table: obj.Table, index: obj.Number
 ) -> obj.Obj:
     try:
         return table.elements[index]
@@ -350,36 +350,36 @@ def evaluate_minus_operator_expression(right: obj.Obj) -> obj.Obj:
             "Attempt to perform arithmetic on a boolean value"
         )
 
-    if type(right) != obj.Integer:
+    if type(right) != obj.Number:
         return NULL
 
-    obj_int = cast(obj.Integer, right)
-    return obj.Integer(value=0 - obj_int.value)
+    obj_int = cast(obj.Number, right)
+    return obj.Number(value=0 - obj_int.value)
 
 
 def evaluate_length_operator_expression(right: obj.Obj) -> obj.Obj:
     if right.type() == obj.ObjType.STRING:
-        return obj.Integer(len(right.value))
+        return obj.Number(len(right.value))
     if right.type() == obj.ObjType.TABLE:
         length: int = 1
         while True:
             try:
-                right.elements[obj.Integer(value=length)]
+                right.elements[obj.Number(value=length)]
                 length = length + 1
             except:
                 break
 
-        return obj.Integer(length - 1)
+        return obj.Number(length - 1)
     return NULL
 
 
 def evaluate_infix_expression(
     operator: str, left: obj.Obj, right: obj.Obj
 ) -> obj.Obj:
-    if type(left) == obj.Integer and type(right) == obj.Integer:
-        left_val = cast(obj.Integer, left)
-        right_val = cast(obj.Integer, right)
-        return evaluate_infix_integer_expression(operator, left_val, right_val)
+    if type(left) == obj.Number and type(right) == obj.Number:
+        left_val = cast(obj.Number, left)
+        right_val = cast(obj.Number, right)
+        return evaluate_infix_number_expression(operator, left_val, right_val)
 
     if type(left) == obj.String and type(right) == obj.String:
         left_str_val = cast(obj.String, left)
@@ -421,23 +421,23 @@ def evaluate_infix_string_expression(
     return NULL
 
 
-def evaluate_infix_integer_expression(
-    operator, left: obj.Integer, right: obj.Integer
+def evaluate_infix_number_expression(
+    operator, left: obj.Number, right: obj.Number
 ) -> obj.Obj:
     if operator == "+":
-        return obj.Integer(left.value + right.value)
+        return obj.Number(left.value + right.value)
 
     if operator == "-":
-        return obj.Integer(left.value - right.value)
+        return obj.Number(left.value - right.value)
 
     if operator == "*":
-        return obj.Integer(left.value * right.value)
+        return obj.Number(left.value * right.value)
 
     if operator == "/":
-        return obj.Float(left.value / right.value)
+        return obj.Number(left.value / right.value)
 
     if operator == "%":
-        return obj.Float(left.value % right.value)
+        return obj.Number(left.value % right.value)
 
     if operator == ">":
         return native_bool_to_bool_obj(left.value > right.value)

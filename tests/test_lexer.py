@@ -13,13 +13,13 @@ class LexerTest(unittest.TestCase):
         lexer = Lexer(StringIO(source))
 
         tokens = [
-            (TokenType.INT, "1"),
+            (TokenType.NUMBER, "1"),
             (TokenType.PLUS, "+"),
-            (TokenType.INT, "2"),
+            (TokenType.NUMBER, "2"),
             (TokenType.NEWLINE, "\n"),
-            (TokenType.INT, "2"),
+            (TokenType.NUMBER, "2"),
             (TokenType.MINUS, "-"),
-            (TokenType.INT, "1"),
+            (TokenType.NUMBER, "1"),
             (TokenType.NEWLINE, "\n"),
             (TokenType.EOF, "<<EOF>>"),
         ]
@@ -70,15 +70,15 @@ stra .. strb
         lexer = Lexer(StringIO(source))
 
         tokens = [
-            (TokenType.IDENTIFIER, "num"), (TokenType.ASSIGN, "="), (TokenType.INT, "42"),
+            (TokenType.IDENTIFIER, "num"), (TokenType.ASSIGN, "="), (TokenType.NUMBER, "42"),
             (TokenType.NEWLINE, "\n"),
-            (TokenType.IDENTIFIER, "cat"), (TokenType.ASSIGN, "="), (TokenType.INT, "5"),
+            (TokenType.IDENTIFIER, "cat"), (TokenType.ASSIGN, "="), (TokenType.NUMBER, "5"),
             (TokenType.NEWLINE, "\n"),
             (TokenType.COMMENT, " Hello"),
             (TokenType.NEWLINE, "\n"),
             (TokenType.COMMENT, "\nGoodbye\n"),
             (TokenType.NEWLINE, "\n"),
-            (TokenType.IDENTIFIER, "cookie"), (TokenType.EQ, "=="), (TokenType.INT, "9"),
+            (TokenType.IDENTIFIER, "cookie"), (TokenType.EQ, "=="), (TokenType.NUMBER, "9"),
             (TokenType.NEWLINE, "\n"),
             (TokenType.IDENTIFIER, "a"), (TokenType.ASSIGN, "="), (TokenType.NIL, "nil"),
             (TokenType.NEWLINE, "\n"),
@@ -96,15 +96,15 @@ stra .. strb
             (TokenType.NEWLINE, "\n"),
             (TokenType.IDENTIFIER, "stra"), (TokenType.CONCAT, ".."), (TokenType.IDENTIFIER, "strb"),
             (TokenType.NEWLINE, "\n"),
-            (TokenType.INT, "1"), (TokenType.GT, ">"), (TokenType.INT, "2"),
+            (TokenType.NUMBER, "1"), (TokenType.GT, ">"), (TokenType.NUMBER, "2"),
             (TokenType.NEWLINE, "\n"),
-            (TokenType.INT, "2"), (TokenType.GTE, ">="), (TokenType.INT, "2"),
+            (TokenType.NUMBER, "2"), (TokenType.GTE, ">="), (TokenType.NUMBER, "2"),
             (TokenType.NEWLINE, "\n"),
-            (TokenType.INT, "1"), (TokenType.LT, "<"), (TokenType.INT, "2"),
+            (TokenType.NUMBER, "1"), (TokenType.LT, "<"), (TokenType.NUMBER, "2"),
             (TokenType.NEWLINE, "\n"),
-            (TokenType.INT, "2"), (TokenType.LTE, "<="), (TokenType.INT, "2"),
+            (TokenType.NUMBER, "2"), (TokenType.LTE, "<="), (TokenType.NUMBER, "2"),
             (TokenType.NEWLINE, "\n"),
-            (TokenType.INT, "2"), (TokenType.ASTERISK, "*"), (TokenType.INT, "2"),
+            (TokenType.NUMBER, "2"), (TokenType.ASTERISK, "*"), (TokenType.NUMBER, "2"),
             (TokenType.NEWLINE, "\n"),
             (TokenType.EOF, "<<EOF>>"),
         ]
@@ -149,9 +149,9 @@ a = false
             (TokenType.IF, "if"),
             (TokenType.TRUE, "true"),
             (TokenType.THEN, "then"),
-            (TokenType.INT, "1"),
+            (TokenType.NUMBER, "1"),
             (TokenType.ELSE, "else"),
-            (TokenType.INT, "2"),
+            (TokenType.NUMBER, "2"),
             (TokenType.END, "end"),
             (TokenType.EOF, "<<EOF>>"),
         ]
@@ -173,7 +173,7 @@ a = false
             (TokenType.IDENTIFIER, "n"),
             (TokenType.RPAREN, ")"),
             (TokenType.RETURN, "return"),
-            (TokenType.INT, "1"),
+            (TokenType.NUMBER, "1"),
             (TokenType.END, "end"),
             (TokenType.EOF, "<<EOF>>"),
         ]
@@ -193,11 +193,11 @@ a = false
             (TokenType.LPAREN, "("),
             (TokenType.IDENTIFIER, "n"),
             (TokenType.COMMA, ","),
-            (TokenType.INT, "1"),
+            (TokenType.NUMBER, "1"),
             (TokenType.PLUS, "+"),
-            (TokenType.INT, "2"),
+            (TokenType.NUMBER, "2"),
             (TokenType.COMMA, ","),
-            (TokenType.INT, "3"),
+            (TokenType.NUMBER, "3"),
             (TokenType.RPAREN, ")"),
             (TokenType.EOF, "<<EOF>>"),
         ]
@@ -213,9 +213,9 @@ a = false
         lexer = Lexer(StringIO(source))
 
         tokens = [
-            (TokenType.INT, "1"),
+            (TokenType.NUMBER, "1"),
             (TokenType.SEMICOLON, ";"),
-            (TokenType.INT, "2"),
+            (TokenType.NUMBER, "2"),
             (TokenType.EOF, "<<EOF>>"),
         ]
 
@@ -258,9 +258,9 @@ a = false
 
         tokens = [
             (TokenType.LBRACE, "{"),
-            (TokenType.INT, "1"),
+            (TokenType.NUMBER, "1"),
             (TokenType.COMMA, ","),
-            (TokenType.INT, "2"),
+            (TokenType.NUMBER, "2"),
             (TokenType.RBRACE, "}"),
             (TokenType.EOF, "<<EOF>>"),
         ]
@@ -279,7 +279,7 @@ a = false
         tokens = [
             (TokenType.IDENTIFIER, "hello_1"),
             (TokenType.ASSIGN, "="),
-            (TokenType.INT, "1"),
+            (TokenType.NUMBER, "1"),
             (TokenType.EOF, "<<EOF>>"),
         ]
 
@@ -298,7 +298,7 @@ a = false
             (TokenType.LBRACE, "{"),
             (TokenType.IDENTIFIER, "random"),
             (TokenType.ASSIGN, "="),
-            (TokenType.INT, "2"),
+            (TokenType.NUMBER, "2"),
             (TokenType.RBRACE, "}"),
             (TokenType.EOF, "<<EOF>>"),
         ]
@@ -317,9 +317,9 @@ a = false
         tokens = [
             (TokenType.HASH, "#"),
             (TokenType.LBRACE, "{"),
-            (TokenType.INT, "1"),
+            (TokenType.NUMBER, "1"),
             (TokenType.COMMA, ","),
-            (TokenType.INT, "2"),
+            (TokenType.NUMBER, "2"),
             (TokenType.RBRACE, "}"),
             (TokenType.EOF, "<<EOF>>"),
         ]
@@ -336,9 +336,9 @@ a = false
         lexer = Lexer(StringIO(source))
 
         tokens = [
-            (TokenType.INT, "5"),
+            (TokenType.NUMBER, "5"),
             (TokenType.PERCENT, "%"),
-            (TokenType.INT, "10"),
+            (TokenType.NUMBER, "10"),
             (TokenType.EOF, "<<EOF>>"),
         ]
 

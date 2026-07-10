@@ -8,7 +8,7 @@ from luatopy import evaluator
 
 
 class EvaluatorTest(unittest.TestCase):
-    def test_integer_expressions(self):
+    def test_number_expressions(self):
         tests = [
             ("1", 1),
             ("10", 10),
@@ -23,10 +23,10 @@ class EvaluatorTest(unittest.TestCase):
         for source, expected in tests:
             evaluated = source_to_eval(source)
 
-            self.assertEqual(type(evaluated), obj.Integer)
+            self.assertEqual(type(evaluated), obj.Number)
             self.assertEqual(evaluated.value, expected)
 
-    def test_float_expressions(self):
+    def test_number_expressions(self):
         tests = [
             ("4 / 2", 2.0),
             ("5 % 10", 5.0),
@@ -35,7 +35,7 @@ class EvaluatorTest(unittest.TestCase):
         for source, expected in tests:
             evaluated = source_to_eval(source)
 
-            self.assertEqual(type(evaluated), obj.Float)
+            self.assertEqual(type(evaluated), obj.Number)
             self.assertEqual(evaluated.value, expected)
 
     def test_string_concat(self):
@@ -115,7 +115,7 @@ class EvaluatorTest(unittest.TestCase):
         for source, expected in tests:
             evaluated = source_to_eval(source)
 
-            self.assertEqual(type(evaluated), obj.Integer)
+            self.assertEqual(type(evaluated), obj.Number)
             self.assertEqual(evaluated.value, expected)
 
     def test_if_else_expressions(self):
@@ -169,7 +169,7 @@ return 5
         for source, expected in tests:
             evaluated = source_to_eval(source)
 
-            self.assertEqual(type(evaluated), obj.Integer)
+            self.assertEqual(type(evaluated), obj.Number)
             self.assertEqual(evaluated.value, expected)
 
     def test_error_handling(self):
@@ -235,7 +235,7 @@ true + false
         for source, expected in tests:
             evaluated = source_to_eval(source)
 
-            self.assertEqual(type(evaluated), obj.Integer)
+            self.assertEqual(type(evaluated), obj.Number)
             self.assertEqual(evaluated.value, expected)
 
     def test_function_declaration(self):

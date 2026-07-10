@@ -81,12 +81,12 @@ class ParserTest(unittest.TestCase):
             program = program_from_source(source)
             self.assertEqual(len(program.statements), expected)
 
-    def test_integer_literal(self):
+    def test_number_literal(self):
         program = program_from_source("1")
 
         statement = program.statements[0]
         self.assertIs(type(statement), ast.ExpressionStatement)
-        self.assertIs(type(statement.expression), ast.IntegerLiteral)
+        self.assertIs(type(statement.expression), ast.NumberLiteral)
 
     def test_identifier(self):
         program = program_from_source("a")

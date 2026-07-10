@@ -19,7 +19,7 @@ Use `pytest` for testing functionality.
 ## Supports
 - Single and multiline comments
 - Variable assignments
-- Numbers
+- Numbers (float and integer)
 - Strings
 - Tables
 - Addition, multiplication and division

@@ -18,7 +18,8 @@
 - [ ] `repeat` loop
 - [ ] Short circuit / tenary operator
 - [ ] Dot property syntax in Table for string keys
-- [ ] Numbers beginning with `.` (Ex `.5`)
+- [x] Numbers beginning with `.` (Ex `.5`),
+- [x] Supports type(Number) = number, Number is float or int under the hood
 - [ ] Handle global vs local variables in lua style
 - [ ] Function calls with single params should not require parens
 - [ ] Metatable support for tables
@@ -36,12 +37,9 @@ The lexer currently supports basic control flow (`if`, `then`, `else`, `end`, `r
 
 ### 2. Number Parsing Limitations
 
-Currently, `_read_number` only captures contiguous digits (integers) and yields an `INT` token. Standard Lua handles numbers much more flexibly:
-
-* **Floats/Decimals:** needs to support decimal points (e.g., `3.14`).
 * **Scientific Notation:** Lua supports exponents (e.g., `1e-5`, `2E10`).
 * **Hexadecimal:** Lua supports hex values starting with `0x` or `0X` (e.g., `0xFF`).
-* *Note:* Prior to Lua 5.3, all numbers were double-precision floats. Lua 5.3 introduced distinct integer and float subtypes, so may want to return a generic `NUMBER` token rather than just `INT`.
+* *Note:* Prior to Lua 5.3, all numbers were double-precision floats. Lua 5.3 introduced distinct integer and float subtypes
 
 ### 3. String and Comment Quirks
 
